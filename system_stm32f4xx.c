@@ -2,51 +2,184 @@
   ******************************************************************************
   * @file    system_stm32f4xx.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    11-November-2013
+  * @version V1.3.0
+  * @date    08-November-2013
   * @brief   CMSIS Cortex-M4 Device Peripheral Access Layer System Source File.
-  *          This file is customized to run on STM32F429I-DISCO board only.
-  *
-  *          The STM32F4xx is configured to run at 180 MHz, following the three  
-  *          configuration below:
-  *            - PLL_SOURCE_HSI                : HSI (~16MHz) used to clock the PLL, and
-  *                                              the PLL is used as system clock source.  
-  *            - PLL_SOURCE_HSE                : HSE (8MHz) used to clock the PLL, and 
-  *                                              the PLL is used as system clock source.
-  *            - PLL_SOURCE_HSE_BYPASS(default): HSE bypassed with an external clock 
-  *                                              (8MHz, coming from ST-Link) used to clock
-  *                                              the PLL, and the PLL is used as system
-  *                                              clock source.  
-  * 
+  *          This file contains the system clock configuration for STM32F4xx devices.
+  *             
   * 1.  This file provides two functions and one global variable to be called from 
   *     user application:
   *      - SystemInit(): Setups the system clock (System clock source, PLL Multiplier
   *                      and Divider factors, AHB/APBx prescalers and Flash settings),
-  *                      depending on the configuration made in the clock xls tool.
+  *                      depending on the configuration made in the clock xls tool. 
   *                      This function is called at startup just after reset and 
   *                      before branch to main program. This call is made inside
-  *                      the "startup_stm32f429_439xx.s" file.
+  *                      the "startup_stm32f4xx.s" file.
   *
   *      - SystemCoreClock variable: Contains the core clock (HCLK), it can be used
   *                                  by the user application to setup the SysTick 
   *                                  timer or configure other parameters.
-  *
+  *                                     
   *      - SystemCoreClockUpdate(): Updates the variable SystemCoreClock and must
   *                                 be called whenever the core clock is changed
   *                                 during program execution.
   *
   * 2. After each device reset the HSI (16 MHz) is used as system clock source.
-  *    Then SystemInit() function is called, in "startup_stm32f429_439xx.s" file, to
+  *    Then SystemInit() function is called, in "startup_stm32f4xx.s" file, to
   *    configure the system clock before to branch to main program.
   *
   * 3. If the system clock source selected by user fails to startup, the SystemInit()
   *    function will do nothing and HSI still used as system clock source. User can 
   *    add some code to deal with this issue inside the SetSysClock() function.
   *
-  * 4. The default value of HSE crystal is set to 8MHz, refer to "HSE_VALUE" define
+  * 4. The default value of HSE crystal is set to 25MHz, refer to "HSE_VALUE" define
   *    in "stm32f4xx.h" file. When HSE is used as system clock source, directly or
   *    through PLL, and you are using different crystal you have to adapt the HSE
   *    value to your own configuration.
+  *
+  * 5. This file configures the system clock as follows:
+  *=============================================================================
+  *=============================================================================
+  *                    Supported STM32F40xxx/41xxx devices
+  *-----------------------------------------------------------------------------
+  *        System Clock source                    | PLL (HSE)
+  *-----------------------------------------------------------------------------
+  *        SYSCLK(Hz)                             | 168000000
+  *-----------------------------------------------------------------------------
+  *        HCLK(Hz)                               | 168000000
+  *-----------------------------------------------------------------------------
+  *        AHB Prescaler                          | 1
+  *-----------------------------------------------------------------------------
+  *        APB1 Prescaler                         | 4
+  *-----------------------------------------------------------------------------
+  *        APB2 Prescaler                         | 2
+  *-----------------------------------------------------------------------------
+  *        HSE Frequency(Hz)                      | 25000000
+  *-----------------------------------------------------------------------------
+  *        PLL_M                                  | 25
+  *-----------------------------------------------------------------------------
+  *        PLL_N                                  | 336
+  *-----------------------------------------------------------------------------
+  *        PLL_P                                  | 2
+  *-----------------------------------------------------------------------------
+  *        PLL_Q                                  | 7
+  *-----------------------------------------------------------------------------
+  *        PLLI2S_N                               | NA
+  *-----------------------------------------------------------------------------
+  *        PLLI2S_R                               | NA
+  *-----------------------------------------------------------------------------
+  *        I2S input clock                        | NA
+  *-----------------------------------------------------------------------------
+  *        VDD(V)                                 | 3.3
+  *-----------------------------------------------------------------------------
+  *        Main regulator output voltage          | Scale1 mode
+  *-----------------------------------------------------------------------------
+  *        Flash Latency(WS)                      | 5
+  *-----------------------------------------------------------------------------
+  *        Prefetch Buffer                        | ON
+  *-----------------------------------------------------------------------------
+  *        Instruction cache                      | ON
+  *-----------------------------------------------------------------------------
+  *        Data cache                             | ON
+  *-----------------------------------------------------------------------------
+  *        Require 48MHz for USB OTG FS,          | Disabled
+  *        SDIO and RNG clock                     |
+  *-----------------------------------------------------------------------------
+  *=============================================================================
+  *=============================================================================
+  *                    Supported STM32F42xxx/43xxx devices
+  *-----------------------------------------------------------------------------
+  *        System Clock source                    | PLL (HSE)
+  *-----------------------------------------------------------------------------
+  *        SYSCLK(Hz)                             | 180000000
+  *-----------------------------------------------------------------------------
+  *        HCLK(Hz)                               | 180000000
+  *-----------------------------------------------------------------------------
+  *        AHB Prescaler                          | 1
+  *-----------------------------------------------------------------------------
+  *        APB1 Prescaler                         | 4
+  *-----------------------------------------------------------------------------
+  *        APB2 Prescaler                         | 2
+  *-----------------------------------------------------------------------------
+  *        HSE Frequency(Hz)                      | 25000000
+  *-----------------------------------------------------------------------------
+  *        PLL_M                                  | 25
+  *-----------------------------------------------------------------------------
+  *        PLL_N                                  | 360
+  *-----------------------------------------------------------------------------
+  *        PLL_P                                  | 2
+  *-----------------------------------------------------------------------------
+  *        PLL_Q                                  | 7
+  *-----------------------------------------------------------------------------
+  *        PLLI2S_N                               | NA
+  *-----------------------------------------------------------------------------
+  *        PLLI2S_R                               | NA
+  *-----------------------------------------------------------------------------
+  *        I2S input clock                        | NA
+  *-----------------------------------------------------------------------------
+  *        VDD(V)                                 | 3.3
+  *-----------------------------------------------------------------------------
+  *        Main regulator output voltage          | Scale1 mode
+  *-----------------------------------------------------------------------------
+  *        Flash Latency(WS)                      | 5
+  *-----------------------------------------------------------------------------
+  *        Prefetch Buffer                        | ON
+  *-----------------------------------------------------------------------------
+  *        Instruction cache                      | ON
+  *-----------------------------------------------------------------------------
+  *        Data cache                             | ON
+  *-----------------------------------------------------------------------------
+  *        Require 48MHz for USB OTG FS,          | Disabled
+  *        SDIO and RNG clock                     |
+  *-----------------------------------------------------------------------------
+  *=============================================================================
+  *=============================================================================
+  *                         Supported STM32F401xx devices
+  *-----------------------------------------------------------------------------
+  *        System Clock source                    | PLL (HSE)
+  *-----------------------------------------------------------------------------
+  *        SYSCLK(Hz)                             | 84000000
+  *-----------------------------------------------------------------------------
+  *        HCLK(Hz)                               | 84000000
+  *-----------------------------------------------------------------------------
+  *        AHB Prescaler                          | 1
+  *-----------------------------------------------------------------------------
+  *        APB1 Prescaler                         | 2
+  *-----------------------------------------------------------------------------
+  *        APB2 Prescaler                         | 1
+  *-----------------------------------------------------------------------------
+  *        HSE Frequency(Hz)                      | 25000000
+  *-----------------------------------------------------------------------------
+  *        PLL_M                                  | 25
+  *-----------------------------------------------------------------------------
+  *        PLL_N                                  | 336
+  *-----------------------------------------------------------------------------
+  *        PLL_P                                  | 4
+  *-----------------------------------------------------------------------------
+  *        PLL_Q                                  | 7
+  *-----------------------------------------------------------------------------
+  *        PLLI2S_N                               | NA
+  *-----------------------------------------------------------------------------
+  *        PLLI2S_R                               | NA
+  *-----------------------------------------------------------------------------
+  *        I2S input clock                        | NA
+  *-----------------------------------------------------------------------------
+  *        VDD(V)                                 | 3.3
+  *-----------------------------------------------------------------------------
+  *        Main regulator output voltage          | Scale1 mode
+  *-----------------------------------------------------------------------------
+  *        Flash Latency(WS)                      | 2
+  *-----------------------------------------------------------------------------
+  *        Prefetch Buffer                        | ON
+  *-----------------------------------------------------------------------------
+  *        Instruction cache                      | ON
+  *-----------------------------------------------------------------------------
+  *        Data cache                             | ON
+  *-----------------------------------------------------------------------------
+  *        Require 48MHz for USB OTG FS,          | Disabled
+  *        SDIO and RNG clock                     |
+  *-----------------------------------------------------------------------------
+  *=============================================================================      
   ****************************************************************************** 
   * @attention
   *
@@ -98,9 +231,16 @@
   */
 
 /************************* Miscellaneous Configuration ************************/
-/*!< Uncomment the following line if you need to use external SDRAM mounted
-     on STM32F429I-DISCO board as data memory  */
+/*!< Uncomment the following line if you need to use external SRAM or SDRAM mounted
+     on STM324xG_EVAL/STM324x7I_EVAL/STM324x9I_EVAL boards as data memory  */
+     
+#if defined (STM32F40_41xxx) || defined (STM32F427_437xx) || defined (STM32F429_439xx)
+/* #define DATA_IN_ExtSRAM */
+#endif /* STM32F40_41xxx || STM32F427_437x || STM32F429_439xx */
+
+#if defined (STM32F427_437xx) || defined (STM32F429_439xx)
 /* #define DATA_IN_ExtSDRAM */
+#endif /* STM32F427_437x || STM32F429_439xx */ 
 
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */
@@ -110,31 +250,30 @@
 /******************************************************************************/
 
 /************************* PLL Parameters *************************************/
-/* Select the PLL clock source */
-
-//#define PLL_SOURCE_HSI        // HSI (~16 MHz) used to clock the PLL, and the PLL is used as system clock source
-#define PLL_SOURCE_HSE        // HSE (8MHz) used to clock the PLL, and the PLL is used as system clock source
-//#define PLL_SOURCE_HSE_BYPASS   // HSE bypassed with an external clock (8MHz, coming from ST-Link) used to clock
-                                // the PLL, and the PLL is used as system clock source
-
-
 /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
-#if defined  (PLL_SOURCE_HSI)
-#define PLL_M      16
-#else
-#define PLL_M      8
-#endif
-#define PLL_N      360
-
-/* SYSCLK = PLL_VCO / PLL_P */
-#define PLL_P      2
-
+#define PLL_M      25
 /* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
 #define PLL_Q      7
 
+#if defined (STM32F40_41xxx)
+#define PLL_N      336
+/* SYSCLK = PLL_VCO / PLL_P */
+#define PLL_P      2
+#endif /* STM32F40_41xxx */
+
+#if defined (STM32F427_437xx) || defined (STM32F429_439xx)
+#define PLL_N      360
+/* SYSCLK = PLL_VCO / PLL_P */
+#define PLL_P      2
+#endif /* STM32F427_437x || STM32F429_439xx */
+
+#if defined (STM32F401xx)
+#define PLL_N      336
+/* SYSCLK = PLL_VCO / PLL_P */
+#define PLL_P      4
+#endif /* STM32F401xx */
+
 /******************************************************************************/
-
-
 
 /**
   * @}
@@ -152,7 +291,17 @@
   * @{
   */
 
+#if defined (STM32F40_41xxx)
+  uint32_t SystemCoreClock = 168000000;
+#endif /* STM32F40_41xxx */
+
+#if defined (STM32F427_437xx) || defined (STM32F429_439xx)
   uint32_t SystemCoreClock = 180000000;
+#endif /* STM32F427_437x || STM32F429_439xx */
+
+#if defined (STM32F401xx)
+  uint32_t SystemCoreClock = 84000000;
+#endif /* STM32F401xx */
 
   __I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
 
@@ -165,9 +314,10 @@
   */
 
 static void SetSysClock(void);
-#if defined (DATA_IN_ExtSDRAM)
-  static void SystemInit_ExtMemCtl(void); 
-#endif /* DATA_IN_ExtSDRAM */
+
+#if defined (DATA_IN_ExtSRAM) || defined (DATA_IN_ExtSDRAM)
+static void SystemInit_ExtMemCtl(void); 
+#endif /* DATA_IN_ExtSRAM || DATA_IN_ExtSDRAM */
 
 /**
   * @}
@@ -209,9 +359,9 @@ void SystemInit(void)
   /* Disable all interrupts */
   RCC->CIR = 0x00000000;
 
-#if defined (DATA_IN_ExtSDRAM)
+#if defined (DATA_IN_ExtSRAM) || defined (DATA_IN_ExtSDRAM)
   SystemInit_ExtMemCtl(); 
-#endif /* DATA_IN_ExtSDRAM */
+#endif /* DATA_IN_ExtSRAM || DATA_IN_ExtSDRAM */
          
   /* Configure the System clock source, PLL Multiplier and Divider factors, 
      AHB/APBx prescalers and Flash settings ----------------------------------*/
@@ -251,7 +401,7 @@ void SystemInit(void)
   *             in voltage and temperature.   
   *    
   *         (**) HSE_VALUE is a constant defined in stm32f4xx.h file (default value
-  *              8 MHz), user has to ensure that HSE_VALUE is same as the real
+  *              25 MHz), user has to ensure that HSE_VALUE is same as the real
   *              frequency of the crystal used. Otherwise, this function may
   *              have wrong result.
   *                
@@ -324,21 +474,9 @@ static void SetSysClock(void)
 /******************************************************************************/
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
-
-#ifdef PLL_SOURCE_HSI
-
-      /* Configure the main PLL */
-    RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
-                   (RCC_PLLCFGR_PLLSRC_HSI) | (PLL_Q << 24);
-
-#else /* PLL_SOURCE_HSE_BYPASS or PLL_SOURCE_HSE */
-
   /* Enable HSE */
   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
-#ifdef PLL_SOURCE_HSE_BYPASS
-    /* Enable HSE */
-  RCC->CR |= ((uint32_t)RCC_CR_HSEBYP);
-#endif   /* PLL_SOURCE_HSE_BYPASS */
+ 
   /* Wait till HSE is ready and if Time out is reached exit */
   do
   {
@@ -357,29 +495,32 @@ static void SetSysClock(void)
 
   if (HSEStatus == (uint32_t)0x01)
   {
-    /* Configure the main PLL */
-    RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
-                   (RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
-
-  }
-    else
-  { /* If HSE fails to start-up, the application will have wrong clock
-         configuration. User can add here some code to deal with this error */
-  }
-#endif /*PLL_SOURCE_HSI*/
-  
-      /* Select regulator voltage output Scale 1 mode, System frequency up to 180 MHz */
+    /* Select regulator voltage output Scale 1 mode */
     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
     PWR->CR |= PWR_CR_VOS;
 
     /* HCLK = SYSCLK / 1*/
     RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
-      
+
+#if defined (STM32F40_41xxx) || defined (STM32F427_437xx) || defined (STM32F429_439xx)      
     /* PCLK2 = HCLK / 2*/
     RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;
     
     /* PCLK1 = HCLK / 4*/
     RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
+#endif /* STM32F40_41xxx || STM32F427_437x || STM32F429_439xx */
+
+#if defined (STM32F401xx)
+    /* PCLK2 = HCLK / 2*/
+    RCC->CFGR |= RCC_CFGR_PPRE2_DIV1;
+    
+    /* PCLK1 = HCLK / 4*/
+    RCC->CFGR |= RCC_CFGR_PPRE1_DIV2;
+#endif /* STM32F401xx */
+   
+    /* Configure the main PLL */
+    RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
+                   (RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
 
     /* Enable the main PLL */
     RCC->CR |= RCC_CR_PLLON;
@@ -388,7 +529,8 @@ static void SetSysClock(void)
     while((RCC->CR & RCC_CR_PLLRDY) == 0)
     {
     }
-
+   
+#if defined (STM32F427_437xx) || defined (STM32F429_439xx)
     /* Enable the Over-drive to extend the clock frequency to 180 Mhz */
     PWR->CR |= PWR_CR_ODEN;
     while((PWR->CSR & PWR_CSR_ODRDY) == 0)
@@ -397,10 +539,20 @@ static void SetSysClock(void)
     PWR->CR |= PWR_CR_ODSWEN;
     while((PWR->CSR & PWR_CSR_ODSWRDY) == 0)
     {
-    } 
-     
+    }      
     /* Configure Flash prefetch, Instruction cache, Data cache and wait state */
     FLASH->ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN |FLASH_ACR_DCEN |FLASH_ACR_LATENCY_5WS;
+#endif /* STM32F427_437x || STM32F429_439xx  */
+
+#if defined (STM32F40_41xxx)     
+    /* Configure Flash prefetch, Instruction cache, Data cache and wait state */
+    FLASH->ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN |FLASH_ACR_DCEN |FLASH_ACR_LATENCY_5WS;
+#endif /* STM32F40_41xxx  */
+
+#if defined (STM32F401xx)
+    /* Configure Flash prefetch, Instruction cache, Data cache and wait state */
+    FLASH->ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN |FLASH_ACR_DCEN |FLASH_ACR_LATENCY_2WS;
+#endif /* STM32F401xx */
 
     /* Select the main PLL as system clock source */
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
@@ -410,13 +562,182 @@ static void SetSysClock(void)
     while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS ) != RCC_CFGR_SWS_PLL);
     {
     }
+  }
+  else
+  { /* If HSE fails to start-up, the application will have wrong clock
+         configuration. User can add here some code to deal with this error */
+  }
+
 }
+
+/**
+  * @brief  Setup the external memory controller. Called in startup_stm32f4xx.s 
+  *          before jump to __main
+  * @param  None
+  * @retval None
+  */ 
+#ifdef DATA_IN_ExtSRAM
+/**
+  * @brief  Setup the external memory controller.
+  *         Called in startup_stm32f4xx.s before jump to main.
+  *         This function configures the external SRAM mounted on STM324xG_EVAL/STM324x7I boards
+  *         This SRAM will be used as program data memory (including heap and stack).
+  * @param  None
+  * @retval None
+  */
+void SystemInit_ExtMemCtl(void)
+{
+/*-- GPIOs Configuration -----------------------------------------------------*/
+/*
+ +-------------------+--------------------+------------------+--------------+
+ +                       SRAM pins assignment                               +
+ +-------------------+--------------------+------------------+--------------+
+ | PD0  <-> FMC_D2  | PE0  <-> FMC_NBL0 | PF0  <-> FMC_A0 | PG0 <-> FMC_A10 | 
+ | PD1  <-> FMC_D3  | PE1  <-> FMC_NBL1 | PF1  <-> FMC_A1 | PG1 <-> FMC_A11 | 
+ | PD4  <-> FMC_NOE | PE3  <-> FMC_A19  | PF2  <-> FMC_A2 | PG2 <-> FMC_A12 | 
+ | PD5  <-> FMC_NWE | PE4  <-> FMC_A20  | PF3  <-> FMC_A3 | PG3 <-> FMC_A13 | 
+ | PD8  <-> FMC_D13 | PE7  <-> FMC_D4   | PF4  <-> FMC_A4 | PG4 <-> FMC_A14 | 
+ | PD9  <-> FMC_D14 | PE8  <-> FMC_D5   | PF5  <-> FMC_A5 | PG5 <-> FMC_A15 | 
+ | PD10 <-> FMC_D15 | PE9  <-> FMC_D6   | PF12 <-> FMC_A6 | PG9 <-> FMC_NE2 | 
+ | PD11 <-> FMC_A16 | PE10 <-> FMC_D7   | PF13 <-> FMC_A7 |-----------------+
+ | PD12 <-> FMC_A17 | PE11 <-> FMC_D8   | PF14 <-> FMC_A8 | 
+ | PD13 <-> FMC_A18 | PE12 <-> FMC_D9   | PF15 <-> FMC_A9 | 
+ | PD14 <-> FMC_D0  | PE13 <-> FMC_D10  |-----------------+
+ | PD15 <-> FMC_D1  | PE14 <-> FMC_D11  |
+ |                  | PE15 <-> FMC_D12  |
+ +------------------+------------------+
+*/
+   /* Enable GPIOD, GPIOE, GPIOF and GPIOG interface clock */
+  RCC->AHB1ENR   |= 0x00000078;
+  
+  /* Connect PDx pins to FMC Alternate function */
+  GPIOD->AFR[0]  = 0x00cc00cc;
+  GPIOD->AFR[1]  = 0xcccccccc;
+  /* Configure PDx pins in Alternate function mode */  
+  GPIOD->MODER   = 0xaaaa0a0a;
+  /* Configure PDx pins speed to 100 MHz */  
+  GPIOD->OSPEEDR = 0xffff0f0f;
+  /* Configure PDx pins Output type to push-pull */  
+  GPIOD->OTYPER  = 0x00000000;
+  /* No pull-up, pull-down for PDx pins */ 
+  GPIOD->PUPDR   = 0x00000000;
+
+  /* Connect PEx pins to FMC Alternate function */
+  GPIOE->AFR[0]  = 0xcccccccc;
+  GPIOE->AFR[1]  = 0xcccccccc;
+  /* Configure PEx pins in Alternate function mode */ 
+  GPIOE->MODER   = 0xaaaaaaaa;
+  /* Configure PEx pins speed to 100 MHz */ 
+  GPIOE->OSPEEDR = 0xffffffff;
+  /* Configure PEx pins Output type to push-pull */  
+  GPIOE->OTYPER  = 0x00000000;
+  /* No pull-up, pull-down for PEx pins */ 
+  GPIOE->PUPDR   = 0x00000000;
+
+  /* Connect PFx pins to FMC Alternate function */
+  GPIOF->AFR[0]  = 0x00cccccc;
+  GPIOF->AFR[1]  = 0xcccc0000;
+  /* Configure PFx pins in Alternate function mode */   
+  GPIOF->MODER   = 0xaa000aaa;
+  /* Configure PFx pins speed to 100 MHz */ 
+  GPIOF->OSPEEDR = 0xff000fff;
+  /* Configure PFx pins Output type to push-pull */  
+  GPIOF->OTYPER  = 0x00000000;
+  /* No pull-up, pull-down for PFx pins */ 
+  GPIOF->PUPDR   = 0x00000000;
+
+  /* Connect PGx pins to FMC Alternate function */
+  GPIOG->AFR[0]  = 0x00cccccc;
+  GPIOG->AFR[1]  = 0x000000c0;
+  /* Configure PGx pins in Alternate function mode */ 
+  GPIOG->MODER   = 0x00080aaa;
+  /* Configure PGx pins speed to 100 MHz */ 
+  GPIOG->OSPEEDR = 0x000c0fff;
+  /* Configure PGx pins Output type to push-pull */  
+  GPIOG->OTYPER  = 0x00000000;
+  /* No pull-up, pull-down for PGx pins */ 
+  GPIOG->PUPDR   = 0x00000000;
+  
+/*-- FMC Configuration ------------------------------------------------------*/
+  /* Enable the FMC/FSMC interface clock */
+  RCC->AHB3ENR         |= 0x00000001;
+  
+#if defined (STM32F427_437xx) || defined (STM32F429_439xx)
+  /* Configure and enable Bank1_SRAM2 */
+  FMC_Bank1->BTCR[2]  = 0x00001011;
+  FMC_Bank1->BTCR[3]  = 0x00000201;
+  FMC_Bank1E->BWTR[2] = 0x0fffffff;
+#endif /* STM32F427_437xx || STM32F429_439xx */ 
+
+#if defined (STM32F40_41xxx)
+  /* Configure and enable Bank1_SRAM2 */
+  FSMC_Bank1->BTCR[2]  = 0x00001011;
+  FSMC_Bank1->BTCR[3]  = 0x00000201;
+  FSMC_Bank1E->BWTR[2] = 0x0fffffff;
+#endif  /* STM32F40_41xxx */
+
+/*
+  Bank1_SRAM2 is configured as follow:
+  In case of FSMC configuration 
+  NORSRAMTimingStructure.FSMC_AddressSetupTime = 1;
+  NORSRAMTimingStructure.FSMC_AddressHoldTime = 0;
+  NORSRAMTimingStructure.FSMC_DataSetupTime = 2;
+  NORSRAMTimingStructure.FSMC_BusTurnAroundDuration = 0;
+  NORSRAMTimingStructure.FSMC_CLKDivision = 0;
+  NORSRAMTimingStructure.FSMC_DataLatency = 0;
+  NORSRAMTimingStructure.FSMC_AccessMode = FMC_AccessMode_A;
+
+  FSMC_NORSRAMInitStructure.FSMC_Bank = FSMC_Bank1_NORSRAM2;
+  FSMC_NORSRAMInitStructure.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_MemoryType = FSMC_MemoryType_SRAM;
+  FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
+  FSMC_NORSRAMInitStructure.FSMC_BurstAccessMode = FSMC_BurstAccessMode_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_AsynchronousWait = FSMC_AsynchronousWait_Disable;  
+  FSMC_NORSRAMInitStructure.FSMC_WaitSignalPolarity = FSMC_WaitSignalPolarity_Low;
+  FSMC_NORSRAMInitStructure.FSMC_WrapMode = FSMC_WrapMode_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_WaitSignalActive = FSMC_WaitSignalActive_BeforeWaitState;
+  FSMC_NORSRAMInitStructure.FSMC_WriteOperation = FSMC_WriteOperation_Enable;
+  FSMC_NORSRAMInitStructure.FSMC_WaitSignal = FSMC_WaitSignal_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_ExtendedMode = FSMC_ExtendedMode_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_WriteBurst = FSMC_WriteBurst_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &NORSRAMTimingStructure;
+  FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct = &NORSRAMTimingStructure;
+
+  In case of FMC configuration   
+  NORSRAMTimingStructure.FMC_AddressSetupTime = 1;
+  NORSRAMTimingStructure.FMC_AddressHoldTime = 0;
+  NORSRAMTimingStructure.FMC_DataSetupTime = 2;
+  NORSRAMTimingStructure.FMC_BusTurnAroundDuration = 0;
+  NORSRAMTimingStructure.FMC_CLKDivision = 0;
+  NORSRAMTimingStructure.FMC_DataLatency = 0;
+  NORSRAMTimingStructure.FMC_AccessMode = FMC_AccessMode_A;
+
+  FMC_NORSRAMInitStructure.FMC_Bank = FMC_Bank1_NORSRAM2;
+  FMC_NORSRAMInitStructure.FMC_DataAddressMux = FMC_DataAddressMux_Disable;
+  FMC_NORSRAMInitStructure.FMC_MemoryType = FMC_MemoryType_SRAM;
+  FMC_NORSRAMInitStructure.FMC_MemoryDataWidth = FMC_MemoryDataWidth_16b;
+  FMC_NORSRAMInitStructure.FMC_BurstAccessMode = FMC_BurstAccessMode_Disable;
+  FMC_NORSRAMInitStructure.FMC_AsynchronousWait = FMC_AsynchronousWait_Disable;  
+  FMC_NORSRAMInitStructure.FMC_WaitSignalPolarity = FMC_WaitSignalPolarity_Low;
+  FMC_NORSRAMInitStructure.FMC_WrapMode = FMC_WrapMode_Disable;
+  FMC_NORSRAMInitStructure.FMC_WaitSignalActive = FMC_WaitSignalActive_BeforeWaitState;
+  FMC_NORSRAMInitStructure.FMC_WriteOperation = FMC_WriteOperation_Enable;
+  FMC_NORSRAMInitStructure.FMC_WaitSignal = FMC_WaitSignal_Disable;
+  FMC_NORSRAMInitStructure.FMC_ExtendedMode = FMC_ExtendedMode_Disable;
+  FMC_NORSRAMInitStructure.FMC_WriteBurst = FMC_WriteBurst_Disable;
+  FMC_NORSRAMInitStructure.FMC_ContinousClock = FMC_CClock_SyncOnly;
+  FMC_NORSRAMInitStructure.FMC_ReadWriteTimingStruct = &NORSRAMTimingStructure;
+  FMC_NORSRAMInitStructure.FMC_WriteTimingStruct = &NORSRAMTimingStructure;
+*/
+  
+}
+#endif /* DATA_IN_ExtSRAM */
   
 #ifdef DATA_IN_ExtSDRAM
 /**
   * @brief  Setup the external memory controller.
-  *         Called in startup_stm32f429_439xx.s before jump to main.
-  *         This function configures the external SDRAM mounted on STM32F429I DISCO board
+  *         Called in startup_stm32f4xx.s before jump to main.
+  *         This function configures the external SDRAM mounted on STM324x9I_EVAL board
   *         This SDRAM will be used as program data memory (including heap and stack).
   * @param  None
   * @retval None
@@ -519,43 +840,43 @@ void SystemInit_ExtMemCtl(void)
   RCC->AHB3ENR |= 0x00000001;
   
   /* Configure and enable SDRAM bank1 */
-  FMC_Bank5_6->SDCR[0] = 0x000029D0;
+  FMC_Bank5_6->SDCR[0] = 0x000039D0;
   FMC_Bank5_6->SDTR[0] = 0x01115351;      
   
   /* SDRAM initialization sequence */
   /* Clock enable command */
   FMC_Bank5_6->SDCMR = 0x00000011; 
   tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
-  while((tmpreg != 0) && (timeout-- > 0))
+  while((tmpreg != 0) & (timeout-- > 0))
   {
     tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
   }
-
+  
   /* Delay */
   for (index = 0; index<1000; index++);
   
   /* PALL command */
   FMC_Bank5_6->SDCMR = 0x00000012;           
   timeout = 0xFFFF;
-  while((tmpreg != 0) && (timeout-- > 0))
+  while((tmpreg != 0) & (timeout-- > 0))
   {
-    tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
+  tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
   }
   
   /* Auto refresh command */
   FMC_Bank5_6->SDCMR = 0x00000073;
   timeout = 0xFFFF;
-  while((tmpreg != 0) && (timeout-- > 0))
+  while((tmpreg != 0) & (timeout-- > 0))
   {
-    tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
+  tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
   }
  
   /* MRD register program */
   FMC_Bank5_6->SDCMR = 0x00046014;
   timeout = 0xFFFF;
-  while((tmpreg != 0) && (timeout-- > 0))
+  while((tmpreg != 0) & (timeout-- > 0))
   {
-    tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
+  tmpreg = FMC_Bank5_6->SDSR & 0x00000020; 
   } 
   
   /* Set refresh count */
@@ -565,7 +886,7 @@ void SystemInit_ExtMemCtl(void)
   /* Disable write protection */
   tmpreg = FMC_Bank5_6->SDCR[0]; 
   FMC_Bank5_6->SDCR[0] = (tmpreg & 0xFFFFFDFF);
-
+  
 /*
   Bank1_SDRAM is configured as follow:
 
@@ -589,7 +910,7 @@ void SystemInit_ExtMemCtl(void)
   FMC_SDRAMInitStructure.FMC_ReadPipeDelay = FMC_ReadPipe_Delay_1;
   FMC_SDRAMInitStructure.FMC_SDRAMTimingStruct = &FMC_SDRAMTimingInitStructure;
 */
-
+  
 }
 #endif /* DATA_IN_ExtSDRAM */
 
