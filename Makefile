@@ -1,4 +1,4 @@
-PROJECT = FreeRTOS_8.0.0
+POJECT = FreeRTOS_8.0.0
 
 EXECUTABLE = $(PROJECT).elf
 BIN_IMAGE = $(PROJECT).bin
@@ -59,6 +59,10 @@ OBJS = \
     main.o \
     system_stm32f4xx.o
 
+#hardware configure
+OBJS += hw_it.o \
+	hw_conf.o 
+
 # STARTUP FILE
 OBJS += startup_stm32f429_439xx.o
 
@@ -89,7 +93,8 @@ OBJS += \
     $(STDP)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.o \
     $(STDP)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.o \
     $(STDP)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.o \
-    $(STDP)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.o
+    $(STDP)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.o \
+    $(STDP)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.o
 
 # STM32F429I-Discovery Utilities
 CFLAGS += -I$(STDP)/Utilities/STM32F429I-Discovery
