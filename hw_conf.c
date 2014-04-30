@@ -7,7 +7,7 @@ void prvSetupHardware(void)
 {
 	/* Set the Vector Table base address at 0x08000000 */
 	NVIC_SetVectorTable( NVIC_VectTab_FLASH, 0x0 );
-	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
+	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 ); //only preempt priority
  	USART_Configuration();
 }
 

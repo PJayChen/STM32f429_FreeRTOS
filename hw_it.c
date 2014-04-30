@@ -24,19 +24,19 @@ void USART1_IRQHandler()
         serial_ch_msg rx_msg;
 
         /* If this interrupt is for a transmit... */
-        if (USART_GetITStatus(USART2, USART_IT_TXE) != RESET) {
+        if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
                 /* "give" the serial_tx_wait_sem semaphore to notfiy processes
                  * that the buffer has a spot free for the next byte.
                  */
                 xSemaphoreGiveFromISR(serial_tx_wait_sem, &xHigherPriorityTaskWoken);
 
                 /* Diables the transmit interrupt. */
-                USART_ITConfig(USART2, USART_IT_TXE, DISABLE);
+                USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
                 /* If this interrupt is for a receive... */
         }
-        else if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) {
+        else if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
                 /* Receive the byte from the buffer. */
-                rx_msg.ch = USART_ReceiveData(USART2);
+                rx_msg.ch = USART_ReceiveData(USART1);
 
                 /* Queue the received byte. */
                 if(!xQueueSendToBackFromISR(xQueueUARTRecvie, &rx_msg, &xHigherPriorityTaskWoken)) {
@@ -68,8 +68,8 @@ void send_byte(char ch)
         /* Send the byte and enable the transmit interrupt (it is disabled by
          * the interrupt).
          */
-        USART_SendData(USART2, ch);
-        USART_ITConfig(USART2, USART_IT_TXE, ENABLE);
+        USART_SendData(USART1, ch);
+        USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 }
 
 void send_str(char *str){
