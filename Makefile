@@ -57,7 +57,8 @@ LDFLAGS += -T stm32f429zi_flash.ld
 CFLAGS += -I.
 OBJS = \
     main.o \
-    system_stm32f4xx.o
+    system_stm32f4xx.o \
+    hw_conf.o
 
 # STARTUP FILE
 OBJS += startup_stm32f429_439xx.o
