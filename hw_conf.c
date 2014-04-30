@@ -50,6 +50,7 @@ void USART_Configuration(void)
 	  
 
 	/*--------------------------- Enable USART Interrupt -------------------------*/
+#if 0
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	USART_ClearFlag(USART1, USART_FLAG_TC);
@@ -63,6 +64,6 @@ void USART_Configuration(void)
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
-
+#endif
 	USART_Cmd(USART1, ENABLE);
 }

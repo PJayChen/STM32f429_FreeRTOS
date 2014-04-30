@@ -33,6 +33,30 @@ char receive_byte()
 	return msg.ch;
 }
 
+void puts_str(char* s)
+{
+	while(*s){
+		while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+		USART_SendData(USART1, *s);
+		s++;
+	}
+}
+
+void vUsartSendTask(void *pvParameters)
+{
+	char get;
+	while(1){
+
+//		get = receive_byte();
+//		send_str("task!!\n\r");
+//		send_byte(get);
+		puts_str("task test\n\r");
+		vTaskDelay(1000);
+		
+	}
+}
+
+
 int main(void)
 {
 
@@ -44,5 +68,10 @@ int main(void)
 	
 	/* initialize hardware... */
 	prvSetupHardware();
+	puts_str("Hardware initial finish...\n\r");
+	xTaskCreate( vUsartSendTask, "send", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	puts_str("Start scheduling...\n\r");
+	vTaskStartScheduler();
+	while(1);
 	return 0;
 }
