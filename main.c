@@ -5,7 +5,7 @@ void vATask(void *pvParameters)
 {
 	while(1){
 		GPIOA->ODR = 0x00000000;
-		vTaskDelay(5/portTICK_PERIOD_MS);
+//		vTaskDelay(5/portTICK_PERIOD_MS);
 	}
 }
 
