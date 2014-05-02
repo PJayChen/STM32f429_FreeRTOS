@@ -7,12 +7,11 @@
 #include "timers.h"
 #include "queue.h"
 
+#include "hw_conf.h"
+#include "myio.h"
+
 /* semaphores, queues declarations */
-xQueueHandle xQueueUARTSend;
 xQueueHandle xQueueUARTRecvie;
-
-xSemaphoreHandle serial_tx_wait_sem;
-
 
 /* Queue structure used for passing messages. */
 typedef struct {
@@ -35,14 +34,14 @@ char receive_byte()
 
 int main(void)
 {
-
-	/*a queue for tansfer the senddate to USART task*/
-	xQueueUARTSend = xQueueCreate(15, sizeof(serial_str_msg));
-	xQueueUARTRecvie = xQueueCreate(15, sizeof(serial_ch_msg));
-
-	vSemaphoreCreateBinary(serial_tx_wait_sem);
-	
 	/* initialize hardware... */
 	prvSetupHardware();
+
+	/*a queue for tansfer the senddate to USART task*/
+	xQueueUARTRecvie = xQueueCreate(15, sizeof(serial_ch_msg));
+
+	uprintf("Hardware initialize finish...\n");
+	
+	while(1);
 	return 0;
 }

@@ -60,8 +60,13 @@ OBJS = \
     system_stm32f4xx.o
 
 #hardware configure
+CFLAGS += -I ./include
 OBJS += hw_it.o \
-	hw_conf.o 
+	hw_conf.o
+
+#String, USART...
+OBJS += myio.o \
+	String.o 
 
 # STARTUP FILE
 OBJS += startup_stm32f429_439xx.o
