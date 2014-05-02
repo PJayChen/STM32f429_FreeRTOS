@@ -26,10 +26,6 @@ void USART1_IRQHandler()
     /* If this interrupt is for a transmit... */
     if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
             
-            while(*pUSARTtxData != '\0'){
-                USART_SendData(USART1, *pUSARTtxData++);
-            }
-            
             /* Diables the transmit interrupt. */
             USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
             

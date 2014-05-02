@@ -1,14 +1,20 @@
-#include <myio.h>
-#include <String.h>
+#include "myio.h"
+#include "String.h"
 
 extern char* pUSARTtxData;
 
 void _print(char *str){
     
-    pUSARTtxData = str;
+    //pUSARTtxData = str;
     
-    //The Interrup will always assert when the TX register is empty(USART_IT_TXE == 1)
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+    while(*str){
+        if(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == SET){
+            USART_SendData(USART1, *str++);
+        }
+    }
+            
+    //The Interrup will always assert when the TXE bit (SR register) is empty(USART_IT_TXE == 1)
+    //USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 }
 
 
@@ -22,7 +28,8 @@ void uprintf(const char *format, ...){
     char percentage[] = "%";
     char *str;
     char str_num[10];
-    char *str_out = NULL;
+    char str_out[30] = "";
+    int nCnt = 0;
 
     while( format[curr_ch] != '\0' ){
         
@@ -31,22 +38,32 @@ void uprintf(const char *format, ...){
             switch(format[curr_ch + 1]){
                 case 's':
                     str = va_arg(ap, char *);
-                    str_out = str;
+                    //prevent str_out is no more space
+                    nCnt = sizeof(str_out) - strlen(str_out);
+                    strncat(str_out, str, nCnt - 1);
                     break;
                 case 'd':
                     itoa(va_arg(ap, int), str_num);
-                    str_out = str_num;
+                    nCnt = sizeof(str_out) - strlen(str_out);
+                    strncat(str_out, str_num, nCnt - 1);
+                    //str_out = str_num;
                     break;
                 case 'c':                  
                     out_ch[0] = (char)va_arg(ap, int);
-                    str_out = out_ch;
+                    nCnt = sizeof(str_out) - strlen(str_out);
+                    strncat(str_out, out_ch, nCnt - 1);
+                    //str_out = out_ch;
                     break;
                 case 'x':
                     xtoa(va_arg(ap, int), str_num);
-                    str_out = str_num;
+                    nCnt = sizeof(str_out) - strlen(str_out);
+                    strncat(str_out, str_num, nCnt - 1);
+                    //str_out = str_num;
                     break;
                 case '%':
-                    str_out = percentage;
+                    nCnt = sizeof(str_out) - strlen(str_out);
+                    strncat(str_out, percentage, nCnt - 1);
+                    //str_out = percentage;
                     break;
                 default:;
             }//End of switch(format[curr_ch + 1])
@@ -55,15 +72,21 @@ void uprintf(const char *format, ...){
 
         }else if(format[curr_ch] == '\n'){
             
-            str_out = newLine;
-        
+            //str_out = newLine;
+            //prevent str_out is no more space
+            nCnt = sizeof(str_out) - strlen(str_out);
+            strncat(str_out, newLine, nCnt - 1);
+            
         }else{
             
             out_ch[0] = format[curr_ch];
-            str_out = out_ch;
+            
+            //prevent str_out is no more space
+            nCnt = sizeof(str_out) - strlen(str_out);
+            strncat(str_out, out_ch, nCnt);
         }
         curr_ch++;
-        _print(str_out); //print on screen by syscall write()
     }//End of while( format[curr_ch] != '\0' )
+    _print(str_out); //print on screen
     va_end(ap);
 }//End of void printf(const char *format, ...)

@@ -12,6 +12,7 @@
 
 /* semaphores, queues declarations */
 xQueueHandle xQueueUARTRecvie;
+xQueueHandle xQueueUSARTSend;
 
 /* Queue structure used for passing messages. */
 typedef struct {
@@ -21,6 +22,8 @@ typedef struct {
 typedef struct {
 	char ch;
 } serial_ch_msg;
+
+extern char* pUSARTtxData;
 
 /* Private functions ---------------------------------------------------------*/
 char receive_byte()
@@ -32,16 +35,41 @@ char receive_byte()
 	return msg.ch;
 }
 
+void vATask(void *pvParameters)
+{
+	while(1){
+		vTaskDelay(1000);
+		uprintf("Task A run... \n");
+		uprintf("Task A 123... \n");
+		
+	}
+}
+
+void vBTask(void *pvParameters)
+{
+	while(1){
+		vTaskDelay(1000);
+		uprintf("Task B run... \n");
+		
+	}
+}
+
 int main(void)
 {
+	char a[] = {'\0','\0'};
 	/* initialize hardware... */
 	prvSetupHardware();
 
 	/*a queue for tansfer the senddate to USART task*/
 	xQueueUARTRecvie = xQueueCreate(15, sizeof(serial_ch_msg));
+	xQueueUSARTSend = xQueueCreate(15, sizeof(serial_ch_msg));
 
 	uprintf("Hardware initialize finish...\n");
 	
+	xTaskCreate( vATask, "send", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	//xTaskCreate( vBTask, "send", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	
+	vTaskStartScheduler();
 	while(1);
 	return 0;
 }

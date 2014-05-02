@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include "FreeRTOSConfig.h"
 
-//put string into default pipe defined in _print().
+void _print(char *str);
 void uprintf(const char *format, ...);
 
 #endif
