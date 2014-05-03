@@ -7,9 +7,8 @@
 #include "timers.h"
 #include "queue.h"
 
-
-char* pUSARTtxData;
 extern xQueueHandle xQueueUARTRecvie;
+extern SemaphoreHandle_t xSemUSART1send;
 
 /* Queue structure used for passing characters. */
 typedef struct {
@@ -26,6 +25,7 @@ void USART1_IRQHandler()
     /* If this interrupt is for a transmit... */
     if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
             
+            xSemaphoreGiveFromISR(xSemUSART1send, NULL);
             /* Diables the transmit interrupt. */
             USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
             

@@ -2,6 +2,7 @@
 #include "String.h"
 
 extern char* pUSARTtxData;
+extern SemaphoreHandle_t xSemUSART1send;
 
 void _print(char *str){
     
@@ -12,9 +13,9 @@ void _print(char *str){
             USART_SendData(USART1, *str++);
         }
     }
-            
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);        
     //The Interrup will always assert when the TXE bit (SR register) is empty(USART_IT_TXE == 1)
-    //USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+    
 }
 
 
@@ -30,6 +31,8 @@ void uprintf(const char *format, ...){
     char str_num[10];
     char str_out[30] = "";
     int nCnt = 0;
+
+    while( xSemaphoreTake(xSemUSART1send,  portMAX_DELAY) == pdFALSE);
 
     while( format[curr_ch] != '\0' ){
         

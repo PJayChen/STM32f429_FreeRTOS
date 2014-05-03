@@ -13,6 +13,7 @@
 /* semaphores, queues declarations */
 xQueueHandle xQueueUARTRecvie;
 xQueueHandle xQueueUSARTSend;
+SemaphoreHandle_t xSemUSART1send;
 
 /* Queue structure used for passing messages. */
 typedef struct {
@@ -56,13 +57,13 @@ void vBTask(void *pvParameters)
 
 int main(void)
 {
-	char a[] = {'\0','\0'};
 	/* initialize hardware... */
 	prvSetupHardware();
 
 	/*a queue for tansfer the senddate to USART task*/
 	xQueueUARTRecvie = xQueueCreate(15, sizeof(serial_ch_msg));
 	xQueueUSARTSend = xQueueCreate(15, sizeof(serial_ch_msg));
+	xSemUSART1send = xSemaphoreCreateBinary();
 
 	uprintf("Hardware initialize finish...\n");
 	

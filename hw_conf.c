@@ -47,7 +47,7 @@ void USART_Configuration(void)
 	USART_Init(USART1, &USART_InitStructure);
 	
 	/* Enable transmit and receive interrupts for the USART1. */
-	USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+	USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);  
 
 	/*--------------------------- Enable USART Interrupt -------------------------*/
