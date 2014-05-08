@@ -36,7 +36,7 @@ void USART_Configuration(void)
   	USART_InitTypeDef USART_InitStructure;
   
 	//USART Parameters
-	USART_InitStructure.USART_BaudRate = 19200;
+	USART_InitStructure.USART_BaudRate = 115200;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No ;
@@ -47,7 +47,7 @@ void USART_Configuration(void)
 	USART_Init(USART1, &USART_InitStructure);
 	
 	/* Enable transmit and receive interrupts for the USART1. */
-	USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+	USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);  
 
 	/*--------------------------- Enable USART Interrupt -------------------------*/
@@ -58,7 +58,7 @@ void USART_Configuration(void)
 	/* Enable the USART1 IRQ in the NVIC module (so that the USART1 interrupt
 	* handler is enabled). */
 	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = configMAX_SYSCALL_INTERRUPT_PRIORITY + 0x10;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = configMAX_SYSCALL_INTERRUPT_PRIORITY + 0x20;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
