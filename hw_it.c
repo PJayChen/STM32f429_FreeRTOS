@@ -25,29 +25,29 @@ void USART1_IRQHandler()
     /* If this interrupt is for a transmit... */
     if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
             
-            xSemaphoreGiveFromISR(xSemUSART1send, NULL);
+           
             /* Diables the transmit interrupt. */
             USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
-            
+            xSemaphoreGiveFromISR(xSemUSART1send, &xHigherPriorityTaskWoken); 
+
     /* If this interrupt is for a receive... */
     }else if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
             /* Receive the byte from the buffer. */
             rx_msg.ch = USART_ReceiveData(USART1);
 
             /* Queue the received byte. */
-            if(!xQueueSendToBackFromISR(xQueueUARTRecvie, &rx_msg, &xHigherPriorityTaskWoken)) {
-                    /* If there was an error queueing the received byte,
-                     * freeze. */
-                    while(1);
-            }
+            xQueueSendToBackFromISR(xQueueUARTRecvie, &rx_msg, &xHigherPriorityTaskWoken);
+            
     
-    }else {
+    }
+#if 0
+	else {
             /* Only transmit and receive interrupts should be enabled.
              * If this is another type of interrupt, freeze.
              */
             while(1);
     }
-
+#endif
     if (xHigherPriorityTaskWoken) {
             taskYIELD();
     }

@@ -36,40 +36,48 @@ char receive_byte()
 	return msg.ch;
 }
 
-void vATask(void *pvParameters)
+void vUsartInputResponse(void *pvParameters)
 {
 	while(1){
-		vTaskDelay(1000);
-		uprintf("Task A run... \n");
-		uprintf("Task A 123... \n");
-		
+		uprintf("%c", receive_byte());
+	}
+}
+
+void vATask(void *pvParameters)
+{	
+	char A[] = "Task A running... ";
+	char who = 'A';
+	while(1){
+		vTaskDelay(100);
+		uprintf("Task %c running\n", who);	
 	}
 }
 
 void vBTask(void *pvParameters)
 {
+	char A[] = "Task B running... ";
 	while(1){
-		vTaskDelay(1000);
-		uprintf("Task B run... \n");
-		
+		vTaskDelay(100);
+		uprintf("%s\n", A);	
 	}
 }
 
 int main(void)
 {
+	/*a queue for tansfer the senddate to USART task*/
+	xQueueUARTRecvie = xQueueCreate(15, sizeof(serial_ch_msg));
+    /*for UASRT Tx usage token*/
+	xSemUSART1send = xSemaphoreCreateBinary();
+
 	/* initialize hardware... */
 	prvSetupHardware();
 
-	/*a queue for tansfer the senddate to USART task*/
-	xQueueUARTRecvie = xQueueCreate(15, sizeof(serial_ch_msg));
-	xQueueUSARTSend = xQueueCreate(15, sizeof(serial_ch_msg));
-	xSemUSART1send = xSemaphoreCreateBinary();
+	_print("Hardware initialize finish...\n\r");
 
-	uprintf("Hardware initialize finish...\n");
-	
 	xTaskCreate( vATask, "send", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-	//xTaskCreate( vBTask, "send", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-	
+	xTaskCreate( vBTask, "send", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate( vUsartInputResponse, "vUsartInputResponse", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);	
+
 	vTaskStartScheduler();
 	while(1);
 	return 0;

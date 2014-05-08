@@ -13,7 +13,7 @@ void _print(char *str){
             USART_SendData(USART1, *str++);
         }
     }
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);        
+    //USART_ITConfig(USART1, USART_IT_TXE, ENABLE);        
     //The Interrup will always assert when the TXE bit (SR register) is empty(USART_IT_TXE == 1)
     
 }
@@ -32,6 +32,7 @@ void uprintf(const char *format, ...){
     char str_out[30] = "";
     int nCnt = 0;
 
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
     while( xSemaphoreTake(xSemUSART1send,  portMAX_DELAY) == pdFALSE);
 
     while( format[curr_ch] != '\0' ){
