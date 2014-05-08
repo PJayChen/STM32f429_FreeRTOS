@@ -1,4 +1,4 @@
-POJECT = FreeRTOS_8.0.0
+PROJECT = FreeRTOS_8
 
 EXECUTABLE = $(PROJECT).elf
 BIN_IMAGE = $(PROJECT).bin
@@ -37,7 +37,7 @@ CFLAGS += -g -std=c99
 CFLAGS += -Wall
 
 # Optimizations
-CFLAGS += -O3 -ffast-math
+CFLAGS += -O1 -ffast-math
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wl,--gc-sections
 CFLAGS += -fno-common
