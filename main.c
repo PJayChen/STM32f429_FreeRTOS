@@ -32,7 +32,7 @@ char receive_byte()
 	serial_ch_msg msg;
 
 	/* Wait for a byte to be queued by the receive interrupts handler. */
-	while (!xQueueReceive(xQueueUARTRecvie, &msg, portMAX_DELAY));
+	while (xQueueReceive(xQueueUARTRecvie, &msg, 0) == pdFALSE);
 	return msg.ch;
 }
 
