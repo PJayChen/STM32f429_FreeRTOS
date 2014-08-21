@@ -36,7 +36,7 @@ void USART_Configuration(void)
   	USART_InitTypeDef USART_InitStructure;
   
 	//USART Parameters
-	USART_InitStructure.USART_BaudRate = 115200;
+	USART_InitStructure.USART_BaudRate = 9600;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No ;
@@ -47,7 +47,7 @@ void USART_Configuration(void)
 	USART_Init(USART1, &USART_InitStructure);
 	
 	/* Enable transmit and receive interrupts for the USART1. */
-	USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+	USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);  
 
 	/*--------------------------- Enable USART Interrupt -------------------------*/
